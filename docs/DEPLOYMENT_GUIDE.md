@@ -430,6 +430,39 @@ railway logs | grep "Bull worker"
 
 If any check fails, [roll back immediately](#210-rollback-a-bad-deploy) and investigate.
 
+### Identify the contract WASM for a release
+
+For a production frontend deployment, open the matching **CD — Vercel Deploy**
+run in GitHub Actions and download its
+`deployment-provenance-<commit SHA>-<run ID>` artifact. Confirm the run is the
+production run for the deployed Vercel URL and commit. Extract the artifact; it
+contains `neurowealth_vault.wasm` and `manifest.txt`.
+
+Read `contract_wasm_sha256` from `manifest.txt` and calculate the file's SHA-256:
+
+```powershell
+Get-FileHash .\neurowealth_vault.wasm -Algorithm SHA256
+```
+
+Alternatively, on Linux or macOS:
+
+```bash
+sha256sum neurowealth_vault.wasm
+```
+
+The calculated hash must match `contract_wasm_sha256`. Also verify that
+`commit_sha`, `workflow_run_id`, and `deployment_url` in the manifest identify
+the production deployment you are investigating. To identify the WASM actually
+installed on-chain, compare this hash with the published deployment record's
+WASM hash (for an upgrade, the hash in the `UpgradeScheduledEvent` and the
+completed upgrade evidence). A mismatch means the artifact does not identify
+the installed WASM; investigate the release records before treating it as such.
+
+The artifact records the WASM built from the deployment's source commit; the
+Vercel workflow does not install or upgrade the contract. See
+[`RELEASE_PROVENANCE.md`](RELEASE_PROVENANCE.md) for the artifact's contents and
+limitations.
+
 ---
 
 ## 6. Routine Operations
