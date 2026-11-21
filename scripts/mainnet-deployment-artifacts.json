@@ -1,0 +1,19 @@
+{
+  "_comment": "Deployment record for NeuroWealth Vault mainnet deployments. Each top-level key is the vault contract ID (C... address). Populated manually by the operator following scripts/MAINNET_DEPLOYMENT_RUNBOOK.txt. See docs/DEPLOYMENT_GUIDE.md for field descriptions and the artifact-verification walkthrough.",
+  "_schema_version": "1",
+  "PLACEHOLDER_REPLACE_WITH_VAULT_CONTRACT_ID": {
+    "network": "mainnet",
+    "vault_contract_id": "PLACEHOLDER_REPLACE_WITH_VAULT_CONTRACT_ID",
+    "release_tag": "v0.0.0",
+    "source_commit": "0000000000000000000000000000000000000000",
+    "ci_run_url": "https://github.com/ORG/REPO/actions/runs/RUN_ID",
+    "ci_run_id": "RUN_ID",
+    "artifact_name": "neurowealth-vault-wasm",
+    "wasm_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "installed_wasm_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "deploy_tx_hash": "REPLACE_WITH_TRANSACTION_HASH",
+    "deployed_at": "1970-01-01T00:00:00Z",
+    "deployed_by": "operator@example.com",
+    "notes": "PLACEHOLDER — replace this entry with real deployment data before use"
+  }
+}
