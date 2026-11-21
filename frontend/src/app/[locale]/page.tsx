@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { BalanceCard } from '@/components/BalanceCard';
 import { EarningsCard } from '@/components/EarningsCard';
 import { StrategyBadge } from '@/components/StrategyBadge';
+import { StrategyComparison } from '@/components/StrategyComparison';
 import { PortfolioChart } from '@/components/PortfolioChart';
 import { TransactionHistory } from '@/components/TransactionHistory';
 import { ActionModal } from '@/components/ActionModal';
@@ -211,6 +212,14 @@ export default function DashboardPage() {
                 </>
               )}
             </section>
+          </ErrorBoundary>
+
+          <ErrorBoundary surfaceName="strategy comparison" onReset={() => loadData()}>
+            <StrategyComparison
+              currentStrategy={vaultState.strategy}
+              onSelectStrategy={handleSelectStrategy}
+              isUpdating={isUpdatingStrategy}
+            />
           </ErrorBoundary>
 
           <ErrorBoundary surfaceName="strategies" onReset={() => loadData()}>
