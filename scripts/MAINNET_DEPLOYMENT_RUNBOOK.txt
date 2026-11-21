@@ -118,7 +118,12 @@ This design prioritizes safety by requiring explicit, verifiable steps.
     - Save all transaction hashes
     - Document vault contract ID (C...)
     - Document timestamp of deployment
-    - Save to: scripts/mainnet-deployment-artifacts.json (manually)
+  - Record the downloaded/installed WASM hash, artifact name, source commit,
+    release tag, and exact CI job URL
+  - Save to: scripts/mainnet-deployment-artifacts.json (manually), or invoke
+    the save_artifacts helper after confirming the WASM checksum
+  - Follow docs/DEPLOYMENT_GUIDE.md to locate the artifact, read its checksum,
+    and compare it with the metadata and Stellar install/upload result
 
 ================================================================================
 POST-DEPLOYMENT VERIFICATION PHASE
