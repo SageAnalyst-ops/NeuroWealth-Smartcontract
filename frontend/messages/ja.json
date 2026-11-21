@@ -66,6 +66,13 @@
     "walletDisconnected": "ウォレットが接続されていません。Freighterを再接続してこのアプリにアクセスを許可してから、再試行してください。",
     "submissionFailed": "トランザクションが失敗しました。もう一度お試しください。",
     "transactionFailed": "トランザクションが失敗しました。もう一度お試しください。",
-    "checkStatusLater": "後でステータスを確認"
+    "checkStatusLater": "後でステータスを確認",
+    "requestedAmount": "リクエスト",
+    "receivedAmount": "受取額",
+    "asset": "資産",
+    "confirmedAt": "確認日時",
+    "estimated": "推定",
+    "viewOnExplorer": "エクスプローラーで表示",
+    "opensInNewTab": "(新しいタブで開きます)"
   }
 }

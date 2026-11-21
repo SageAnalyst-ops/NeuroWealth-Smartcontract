@@ -91,6 +91,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({
   });
   const [txSuccess, setTxSuccess] = useState<boolean>(false);
   const [txHash, setTxHash] = useState<string>("");
+  const [txConfirmedAt, setTxConfirmedAt] = useState<string | null>(null);
   const [txError, setTxError] = useState<TxError | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
@@ -262,6 +263,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({
         : await server!.pollTransaction(sendResult.hash, { attempts: 10 });
 
       if (confirmation.status === "SUCCESS") {
+        setTxConfirmedAt(new Date().toISOString());
         setTxSuccess(true);
         canRetry = true;
         onTransactionConfirmed?.();
@@ -296,6 +298,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({
     }));
     setAmount("");
     setTxHash("");
+    setTxConfirmedAt(null);
     setTxSuccess(false);
     setTxError(null);
   };
@@ -305,6 +308,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({
       setAmount("");
       setTxSuccess(false);
       setTxHash("");
+      setTxConfirmedAt(null);
       setTxError(null);
     }
 
@@ -364,13 +368,13 @@ export const ActionModal: React.FC<ActionModalProps> = ({
           onReset={() => setTxError(null)}
         >
           {txSuccess ? (
-            <div className="text-center py-6">
+            <div className="py-2 sm:py-4">
               <div className="h-16 w-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
                 <CheckCircle2 size={36} />
               </div>
               <h3
                 id="transaction-modal-title"
-                className="text-xl font-bold text-slate-900 dark:text-white mb-2"
+                className="text-center text-xl font-bold text-slate-900 dark:text-white mb-2"
               >
                 {type === "deposit"
                   ? t("depositSuccessful")
@@ -386,14 +390,59 @@ export const ActionModal: React.FC<ActionModalProps> = ({
               </p>
               <p
                 id="transaction-modal-description"
-                className="text-sm text-slate-600 dark:text-slate-400 mb-4 font-mono"
+                className="text-center text-sm text-slate-600 dark:text-slate-400 mb-4 font-mono"
               >
                 {t("transactionHash")} {txHash.substring(0, 12)}...
                 {txHash.substring(txHash.length - 8)}
               </p>
-              <p className="text-xs text-emerald-400 bg-emerald-500/10 py-2 px-3 rounded-lg border border-emerald-500/20 mb-6">
+              <p className="text-center text-xs text-emerald-400 bg-emerald-500/10 py-2 px-3 rounded-lg border border-emerald-500/20 mb-4">
                 {t("confirmedOnNetwork")}
               </p>
+
+              <dl className="mb-5 divide-y divide-slate-200 rounded-xl border border-slate-200 bg-slate-50 dark:divide-slate-800 dark:border-slate-800 dark:bg-slate-900/60">
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-3 px-4 py-3">
+                  <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">{t("requestedAmount")}</dt>
+                  <dd className="text-right text-sm font-semibold text-slate-900 dark:text-white">
+                    {numAmount.toFixed(2)} USDC
+                  </dd>
+                </div>
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-3 px-4 py-3">
+                  <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">{t("receivedAmount")}</dt>
+                  <dd className="text-right text-sm font-semibold text-slate-900 dark:text-white">
+                    {type === "deposit"
+                      ? `${estimatedShares} NV-SHARES (${t("estimated")})`
+                      : `${numAmount.toFixed(2)} USDC`}
+                  </dd>
+                </div>
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-3 px-4 py-3">
+                  <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">{t("asset")}</dt>
+                  <dd className="text-right text-sm font-semibold text-slate-900 dark:text-white">
+                    {type === "deposit" ? "USDC → NV-SHARES" : "USDC"}
+                  </dd>
+                </div>
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-3 px-4 py-3">
+                  <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">{t("confirmedAt")}</dt>
+                  <dd className="text-right text-sm font-semibold text-slate-900 dark:text-white">
+                    {txConfirmedAt
+                      ? new Intl.DateTimeFormat(undefined, {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        }).format(new Date(txConfirmedAt))
+                      : "—"}
+                  </dd>
+                </div>
+              </dl>
+
+              <a
+                href={`https://stellar.expert/explorer/${getExplorerNetworkSegment(NETWORK_PASSPHRASE)}/tx/${txHash}`}
+                target="_blank"
+                rel="noreferrer"
+                className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                {t("viewOnExplorer")}
+                <ExternalLink size={14} />
+                <span className="sr-only">{t("opensInNewTab")}</span>
+              </a>
               <button
                 onClick={handleResetAndClose}
                 className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all"

@@ -66,6 +66,13 @@
     "walletDisconnected": "钱包未连接。重新连接Freighter并授予此应用程序访问权限，然后重试。",
     "submissionFailed": "交易失败。请重试。",
     "transactionFailed": "交易失败。请重试。",
-    "checkStatusLater": "稍后查看状态"
+    "checkStatusLater": "稍后查看状态",
+    "requestedAmount": "请求金额",
+    "receivedAmount": "到账金额",
+    "asset": "资产",
+    "confirmedAt": "确认时间",
+    "estimated": "预计",
+    "viewOnExplorer": "在区块浏览器中查看",
+    "opensInNewTab": "(在新标签页中打开)"
   }
 }
