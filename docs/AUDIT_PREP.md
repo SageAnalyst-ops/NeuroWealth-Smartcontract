@@ -36,6 +36,8 @@
 ### Compiled WASM
 
 The optimised WASM binary is produced by the **Build WASM** job in `.github/workflows/ci.yml` and uploaded as the GitHub Actions artifact **`neurowealth-vault-wasm`** (14-day retention).
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for downloading the artifact,
+verifying its SHA-256 sidecar, and comparing it with deployment metadata.
 
 | Artifact | SHA-256 |
 | :--- | :--- |

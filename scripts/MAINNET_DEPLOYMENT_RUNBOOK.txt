@@ -28,6 +28,7 @@ PREREQUISITES (Complete BEFORE deployment)
     - Build contract: cd neurowealth-vault && cargo build --release --target wasm32-unknown-unknown
     - Compute hash: sha256sum neurowealth-vault/contracts/vault/target/wasm32-unknown-unknown/release/neurowealth_vault.wasm
     - Copy hash to MAINNET_WASM_HASH in .env.mainnet
+    - For the release CI artifact and deployment-record comparison, follow docs/DEPLOYMENT_GUIDE.md
     - Security: Have a second team member independently verify hash
 
 [ ] 4. Fund Deployer Account
@@ -118,7 +119,7 @@ This design prioritizes safety by requiring explicit, verifiable steps.
     - Save all transaction hashes
     - Document vault contract ID (C...)
     - Document timestamp of deployment
-    - Save to: scripts/mainnet-deployment-artifacts.json (manually)
+    - Save to: scripts/mainnet-deployment-artifacts.json (manually), including network, vault contract ID, release tag/source commit, CI run URL, artifact name, wasm_sha256, installed WASM hash, and install/deploy transaction hashes
 
 ================================================================================
 POST-DEPLOYMENT VERIFICATION PHASE

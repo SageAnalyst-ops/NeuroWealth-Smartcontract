@@ -332,10 +332,10 @@ The Owner key holds upgrade privileges. To secure the contract against single-ke
 
 ### 📝 Actionable Checklist
 
-- [ ] **WASM Hash Verification Gate:** Before calling `schedule_upgrade` on mainnet, the WASM hash **must match** a CI-published hash from a signed git tag release build.
-  - Verify CI workflow ran on the intended release tag (e.g., `v2.1.0`).
-  - Confirm the CI build artifact WASM hash is recorded in `CHANGELOG.md` under that version.
-  - Run `stellar contract install` on mainnet and verify the returned hash **byte-for-byte matches** the CI-published hash.
+- [ ] **WASM Hash Verification Gate:** Before calling `schedule_upgrade` on mainnet, the WASM hash **must match** a CI-published hash from the exact commit the signed release tag identifies.
+  - Verify the successful CI workflow run built the commit identified by the intended release tag (e.g., `v2.1.0`).
+  - Download and verify the `neurowealth-vault-wasm` artifact and compare its SHA-256 with the deployment record as described in [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
+  - Run `stellar contract install` on mainnet and verify the returned hash **byte-for-byte matches** the verified artifact hash.
   - Record the matching hash and CI job URL in the release ticket for audit trail.
   - _Rationale:_ This gate ensures the exact bytecode deployed to mainnet was built from a tagged, reviewable commit in git and is not locally-modified or compromised.
 - [ ] **Configure Owner Multisig Account:** Configure the mainnet Owner address with multiple signers (e.g., 2-of-3 or 3-of-5 setup).

@@ -312,6 +312,12 @@ jobs:
                 "$WASM_FILE" \
                 -o "$WASM_FILE"
 
+              (
+                cd "$(dirname "$WASM_FILE")"
+                sha256sum "$(basename "$WASM_FILE")" > "$(basename "$WASM_FILE").sha256"
+              )
+              WASM_SHA256=$(awk '{print $1}' "$WASM_FILE.sha256")
+
               WASM_SIZE=$(stat -c%s "$WASM_FILE")
               LIMIT="${WASM_SIZE_LIMIT_BYTES:-1500000}"
               BASE_BRANCH="${GITHUB_BASE_REF:-${GITHUB_REF_NAME}}"
@@ -351,6 +357,7 @@ jobs:
                 echo "| Metric | Value |"
                 echo "|--------|-------|"
                 echo "| Optimised size | ${WASM_SIZE} bytes |"
+                echo "| SHA-256 | \`${WASM_SHA256}\` |"
                 echo "| Limit          | ${LIMIT} bytes |"
                 if [ -n "$BASELINE_SIZE" ]; then
                   echo "| Baseline (${BASE_BRANCH}) | ${BASELINE_SIZE} bytes |"
@@ -404,7 +411,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: neurowealth-vault-wasm
-          path: ${{ env.WASM_FILE }}
+          path: |
+            ${{ env.WASM_FILE }}
+            ${{ env.WASM_FILE }}.sha256
           retention-days: 14
 
   package-checks:
