@@ -312,11 +312,17 @@ jobs:
                 "$WASM_FILE" \
                 -o "$WASM_FILE"
 
+              (
+                cd "$(dirname "$WASM_FILE")"
+                sha256sum "$(basename "$WASM_FILE")" > "$(basename "$WASM_FILE").sha256"
+              )
+              WASM_SHA256=$(awk '{print $1}' "$WASM_FILE.sha256")
+
               WASM_SIZE=$(stat -c%s "$WASM_FILE")
               LIMIT="${WASM_SIZE_LIMIT_BYTES:-1500000}"
               BASE_BRANCH="${GITHUB_BASE_REF:-${GITHUB_REF_NAME}}"
-              BASELINE_FILE=".github/wasm-size-history.json"
-              BASELINE_SOURCE_FILE="$BASELINE_FILE"
+              BASELINE_SOURCE_FILE=".github/wasm-size-history.json"
+              BASELINE_FILE="$GITHUB_WORKSPACE/$BASELINE_SOURCE_FILE"
               BASELINE_SIZE=""
               DELTA_BYTES=""
               DELTA_DISPLAY="n/a"
@@ -326,7 +332,7 @@ jobs:
                 if git show "origin/$BASE_BRANCH:$BASELINE_SOURCE_FILE" > "$RUNNER_TEMP/wasm-size-baseline.json" 2>/dev/null; then
                   BASELINE_FILE="$RUNNER_TEMP/wasm-size-baseline.json"
                 else
-                  BASELINE_FILE="$BASELINE_SOURCE_FILE"
+                  BASELINE_FILE="$GITHUB_WORKSPACE/$BASELINE_SOURCE_FILE"
                 fi
               fi
 
@@ -351,6 +357,7 @@ jobs:
                 echo "| Metric | Value |"
                 echo "|--------|-------|"
                 echo "| Optimised size | ${WASM_SIZE} bytes |"
+                echo "| SHA-256 | \`${WASM_SHA256}\` |"
                 echo "| Limit          | ${LIMIT} bytes |"
                 if [ -n "$BASELINE_SIZE" ]; then
                   echo "| Baseline (${BASE_BRANCH}) | ${BASELINE_SIZE} bytes |"
@@ -371,16 +378,19 @@ jobs:
               fi
 
               if [ "$GITHUB_EVENT_NAME" = "push" ] && { [ "$GITHUB_REF_NAME" = "main" ] || [ "$GITHUB_REF_NAME" = "develop" ]; }; then
-                python3 scripts/update_wasm_baseline.py "$WASM_SIZE" "$GITHUB_SHA" "$GITHUB_REF_NAME" "$BASELINE_FILE"
+                (
+                  cd "$GITHUB_WORKSPACE"
+                  python3 scripts/update_wasm_baseline.py "$WASM_SIZE" "$GITHUB_SHA" "$GITHUB_REF_NAME" "$BASELINE_SOURCE_FILE"
+                )
               fi
 
               # Validate storage layout compatibility gate
-              mkdir -p scripts/e2e-artifacts
-              python3 scripts/check-storage-layout.py \
+              mkdir -p "$GITHUB_WORKSPACE/scripts/e2e-artifacts"
+              python3 "$GITHUB_WORKSPACE/scripts/check-storage-layout.py" \
                 "$WASM_FILE" \
                 "$WASM_FILE" \
-                --migration-doc docs/UPGRADE_MIGRATION.md \
-                --output scripts/e2e-artifacts/storage_layout_diff.txt
+                --migration-doc "$GITHUB_WORKSPACE/docs/UPGRADE_MIGRATION.md" \
+                --output "$GITHUB_WORKSPACE/scripts/e2e-artifacts/storage_layout_diff.txt"
 
               # Export the WASM path for the artifact upload step.
               echo "WASM_FILE=$WASM_FILE" >> "$GITHUB_ENV"
@@ -404,7 +414,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: neurowealth-vault-wasm
-          path: ${{ env.WASM_FILE }}
+          path: |
+            ${{ env.WASM_FILE }}
+            ${{ env.WASM_FILE }}.sha256
           retention-days: 14
 
   package-checks:
