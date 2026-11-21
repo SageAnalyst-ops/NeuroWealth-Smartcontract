@@ -66,6 +66,13 @@
     "walletDisconnected": "Portefeuille non connecté. Reconnectez Freighter et accordez l'accès à cette application, puis réessayez.",
     "submissionFailed": "La transaction a échoué. Veuillez réessayer.",
     "transactionFailed": "La transaction a échoué. Veuillez réessayer.",
-    "checkStatusLater": "Vérifier l'état plus tard"
+    "checkStatusLater": "Vérifier l'état plus tard",
+    "requestedAmount": "Demandé",
+    "receivedAmount": "Reçu",
+    "asset": "Actif",
+    "confirmedAt": "Confirmé",
+    "estimated": "estimé",
+    "viewOnExplorer": "Voir dans l'explorateur",
+    "opensInNewTab": "(s'ouvre dans un nouvel onglet)"
   }
 }

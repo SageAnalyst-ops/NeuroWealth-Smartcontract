@@ -66,6 +66,13 @@
     "walletDisconnected": "Carteira não conectada. Reconecte o Freighter e conceda acesso a este aplicativo, depois tente novamente.",
     "submissionFailed": "A transação falhou. Tente novamente.",
     "transactionFailed": "A transação falhou. Tente novamente.",
-    "checkStatusLater": "Verificar status mais tarde"
+    "checkStatusLater": "Verificar status mais tarde",
+    "requestedAmount": "Solicitado",
+    "receivedAmount": "Recebido",
+    "asset": "Ativo",
+    "confirmedAt": "Confirmado",
+    "estimated": "estimado",
+    "viewOnExplorer": "Ver no explorador",
+    "opensInNewTab": "(abre em uma nova aba)"
   }
 }

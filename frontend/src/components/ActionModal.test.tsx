@@ -138,6 +138,17 @@ describe('ActionModal', () => {
     expect(await screen.findByText(/deposit successful/i, {}, { timeout: 3000 })).toBeInTheDocument();
     expect(signWithFreighter).toHaveBeenCalledWith('AAAAAgAAAAD...SorobanVaultTx...', expect.any(String));
     expect(screen.getByText(/tx-hash-ab/i)).toBeInTheDocument();
+    expect(screen.getByText('Requested')).toBeInTheDocument();
+    expect(screen.getByText('100.00 USDC')).toBeInTheDocument();
+    expect(screen.getByText('Received')).toBeInTheDocument();
+    expect(screen.getByText(/80\.0000 NV-SHARES/)).toBeInTheDocument();
+    expect(screen.getByText('Asset')).toBeInTheDocument();
+    expect(screen.getByText('USDC → NV-SHARES')).toBeInTheDocument();
+    expect(screen.getByText('Confirmed')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /view in explorer/i })).toHaveAttribute(
+      'href',
+      'https://stellar.expert/explorer/testnet/tx/tx-hash-abc123',
+    );
   });
 
   it('optimistically updates balance, rolls back a failed confirmation, and permits retry', async () => {

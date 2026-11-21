@@ -66,6 +66,13 @@
     "walletDisconnected": "Wallet not connected. Reconnect Freighter and grant this app access, then try again.",
     "submissionFailed": "Transaction failed. Please try again.",
     "transactionFailed": "Transaction failed. Please try again.",
-    "checkStatusLater": "Check status later"
+    "checkStatusLater": "Check status later",
+    "requestedAmount": "Requested",
+    "receivedAmount": "Received",
+    "asset": "Asset",
+    "confirmedAt": "Confirmed",
+    "estimated": "estimated",
+    "viewOnExplorer": "View in explorer",
+    "opensInNewTab": "(opens in a new tab)"
   }
 }
