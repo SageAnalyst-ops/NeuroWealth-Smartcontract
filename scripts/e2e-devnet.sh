@@ -150,7 +150,11 @@ if [[ ! -f "$WASM_PATH" ]]; then
 fi
 
 log "WASM size: $(wc -c < "$WASM_PATH") bytes"
-save_artifact "wasm_hash.txt" "$(sha256sum "$WASM_PATH" 2>/dev/null || shasum -a 256 "$WASM_PATH")"
+WASM_CHECKSUM=$(sha256sum "$WASM_PATH" 2>/dev/null | awk '{print $1}')
+if [[ -z "$WASM_CHECKSUM" ]] && command -v shasum >/dev/null 2>&1; then
+  WASM_CHECKSUM=$(shasum -a 256 "$WASM_PATH" | awk '{print $1}')
+fi
+save_artifact "wasm_hash.txt" "$WASM_CHECKSUM"
 
 # Validate storage layout metadata
 log "Validating contract DataKey storage layout metadata..."

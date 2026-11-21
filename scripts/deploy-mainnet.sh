@@ -32,6 +32,10 @@
 #   MAINNET_REBALANCE_COOLDOWN      Cooldown in ledgers (default: 0)
 #   MAINNET_APPROVAL_TTL            Token approval TTL (default: 52560)
 #   MAINNET_SALT                    Deployment salt (auto-generated if omitted)
+#   MAINNET_WASM_ARTIFACT           Release artifact name/path
+#   MAINNET_SOURCE_COMMIT           Commit from which the WASM was built
+#   MAINNET_RELEASE_TAG             Signed release tag, if applicable
+#   MAINNET_CI_JOB_URL              URL of the exact CI build job
 #
 # Network (always mainnet):
 #   SOROBAN_RPC_URL                 Override mainnet RPC URL
@@ -62,6 +66,8 @@ SOROBAN_RPC_URL="${SOROBAN_RPC_URL:-https://soroban.stellar.org}"
 DRY_RUN=false
 DEPLOYMENT_LOG="$SCRIPT_DIR/mainnet-deployment.log"
 DEPLOYMENT_ARTIFACTS="$SCRIPT_DIR/mainnet-deployment-artifacts.json"
+WASM_ARTIFACT="${MAINNET_WASM_ARTIFACT:-neurowealth-vault-wasm/neurowealth_vault.wasm}"
+SOURCE_COMMIT="${MAINNET_SOURCE_COMMIT:-$(git -C "$REPO_ROOT" rev-parse HEAD 2>/dev/null || echo "unknown")}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -424,6 +430,17 @@ execute_deployment() {
 save_artifacts() {
   local vault_address="$1"
   local tx_hash="$2"
+  local wasm_hash
+  local source_commit="$SOURCE_COMMIT"
+
+  if [[ -f "$WASM_PATH" ]]; then
+    wasm_hash=$(sha256sum "$WASM_PATH" 2>/dev/null | awk '{print $1}')
+    if [[ -z "$wasm_hash" ]] && command -v shasum >/dev/null 2>&1; then
+      wasm_hash=$(shasum -a 256 "$WASM_PATH" | awk '{print $1}')
+    fi
+  else
+    wasm_hash="$MAINNET_WASM_HASH"
+  fi
   
   cat > "$DEPLOYMENT_ARTIFACTS" << EOF
 {
@@ -431,6 +448,12 @@ save_artifacts() {
   "network": "mainnet",
   "vault_contract_id": "$vault_address",
   "deployment_tx_hash": "$tx_hash",
+  "wasm_hash": "$wasm_hash",
+  "artifact_sha256": "$wasm_hash",
+  "wasm_artifact": "$WASM_ARTIFACT",
+  "source_commit": "$source_commit",
+  "release_tag": "${MAINNET_RELEASE_TAG:-}",
+  "ci_job_url": "${MAINNET_CI_JOB_URL:-}",
   "owner_address": "$MAINNET_OWNER_ADDRESS",
   "agent_address": "$MAINNET_AGENT_ADDRESS",
   "usdc_token_address": "$MAINNET_USDC_TOKEN_ADDRESS",
