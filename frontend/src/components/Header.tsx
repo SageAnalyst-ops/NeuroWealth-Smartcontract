@@ -39,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ publicKey, onConnect, onDisconne
         {/* Navigation */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-700 dark:text-slate-300">
           <a href="#dashboard" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 transition-colors">Dashboard</a>
+          <a href="#strategy-comparison" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Compare</a>
           <a href="#strategies" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Strategies</a>
           <a href="#history" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Transactions</a>
           <a href="#whatsapp" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">WhatsApp Bot</a>

@@ -5,6 +5,7 @@ import { BalanceCard } from './BalanceCard';
 import { EarningsCard } from './EarningsCard';
 import { PortfolioChart } from './PortfolioChart';
 import { StrategyBadge } from './StrategyBadge';
+import { StrategyComparison } from './StrategyComparison';
 import { TransactionHistory } from './TransactionHistory';
 
 vi.mock('recharts', () => ({
@@ -77,6 +78,26 @@ describe('portfolio display components', () => {
     fireEvent.click(screen.getByRole('button', { name: /growth/i }));
 
     expect(screen.getByText('8.4%')).toBeInTheDocument();
+    expect(onSelectStrategy).toHaveBeenCalledWith('Growth');
+  });
+
+  it('compares strategy horizons, liquidity and uncertainty', () => {
+    const onSelectStrategy = vi.fn();
+
+    render(
+      <StrategyComparison
+        currentStrategy="Balanced"
+        onSelectStrategy={onSelectStrategy}
+      />,
+    );
+
+    expect(screen.getByRole('heading', { name: 'Compare strategies' })).toBeInTheDocument();
+    expect(screen.getAllByText('Time horizon').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Liquidity expectation/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Uncertainty/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/not guarantees/i).length).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'Choose Growth' })[0]);
     expect(onSelectStrategy).toHaveBeenCalledWith('Growth');
   });
 
